@@ -5,11 +5,11 @@ namespace moldovabolgaria_bot.Services;
 
 public static class PollService
 {
-    public static async Task PollMessage(TelegramBotClient bot)
+    public static async Task PollMessage(TelegramBotClient bot, ChatId chatId)
     {
         var inputData = GetPollMessageDataFromConsole();
         if (!inputData.Item3) return;
-        await bot.SendPoll("565260614",
+        await bot.SendPoll(chatId,
             inputData.Item1,
             inputData.Item2);
     }

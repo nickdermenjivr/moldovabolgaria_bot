@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using moldovabolgaria_bot.Services;
 using Telegram.Bot;
+using static System.Double;
 
 namespace moldovabolgaria_bot;
 
@@ -9,6 +10,7 @@ internal static class Program
     private static TelegramBotClient? _botClient;
     private static CancellationTokenSource? _cts;
     private static BotService? _botService;
+    private static NewsService? _newsService;
 
     static async Task Main()
     {
@@ -21,6 +23,7 @@ internal static class Program
             _botClient = new TelegramBotClient("8181148069:AAHGwZXVK1rLdQ45g5D8_KCf2BPqZ1Q_IkE");
             _cts = new CancellationTokenSource();
             _botService = new BotService(_botClient);
+            _newsService = new NewsService(_botClient);
 
             // Start bot
             var me = await _botClient.GetMe();
@@ -59,7 +62,23 @@ internal static class Program
                     return;
 
                 case "poll":
-                    await PollService.PollMessage(_botClient!);
+                    await PollService.PollMessage(_botClient!, "565260614");
+                    break;
+                
+                case "startnews":
+                    await _newsService!.StartNewsPublishingAsync("565260614");
+                    break;
+                case "stopnews":
+                    _newsService!.StopNewsPublishing();
+                    break;
+                case "setnewstimer":
+                    Console.WriteLine("Enter value");
+                    var value = Console.ReadLine();
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        TryParse(value, out var timerValue);
+                        _newsService?.SetTimer(timerValue);
+                    }
                     break;
 
                 default:
